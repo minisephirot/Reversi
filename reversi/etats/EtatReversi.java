@@ -67,13 +67,16 @@ public class EtatReversi extends Etat {
 			throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
 		if (this.plateau[x][y] != null)
 			throw new RuntimeException("Erreur : Joueur joue par dessus un pion.");
-		
 		this.plateau[x][y] = joueur.getJeton();
 		this.numjoueur = !this.numjoueur;
 	}
 	
 	public Jeton[][] getPlateau(){
 		return this.plateau;
+	}
+	
+	public boolean getTour(){
+		return this.numjoueur;
 	}
 
 }

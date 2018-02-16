@@ -10,7 +10,7 @@ public class JoueurReversi extends Joueur {
 	private boolean id;
 	
 	public JoueurReversi(boolean b){
-		if (b){
+		if (!b){
 			this.setJeton(Jeton.J1);	
 			this.setId(false);
 		}else{
