@@ -1,7 +1,9 @@
 package reversi.etats;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import reversi.joueur.Joueur;
 import reversi.joueur.JoueurReversi;
 
 public class EtatReversi extends Etat {
@@ -78,5 +80,50 @@ public class EtatReversi extends Etat {
 	public boolean getTour(){
 		return this.numjoueur;
 	}
+	
+	public EtatReversi(EtatReversi et,int x,int y,JoueurReversi joueur){
+		for(int i=0;i<et.getPlateau().length;i++){
+			for(int j=0;j<et.getPlateau()[i].length;j++){
+				this.plateau[i][j]=et.plateau[i][j];
+			}
+		}
+		poserJeton(joueur,x,y);
+		this.numjoueur=!et.numjoueur;
+		
+	}
+	
+	public ArrayList<EtatReversi> successeur(JoueurReversi joueur){
+		ArrayList<EtatReversi> suivant = new ArrayList<>();
+		for(int i = 0; i<plateau.length;i++){
+			for(int j = 0; j<plateau.length;j++){
+				if(numjoueur){
+					if(plateau[i][j].toString()=="B"){
+						if(plateau[i+1][j].toString()=="N"){
+							if(voisinVerticalBas(i+1,j,"N")){
+								suivant.add(new EtatReversi(this,i,j,joueur));
+							}
+						}
+					}
+				}else{
+					if(plateau[i][j].toString()=="N"){
+						
+					}
+				}
+			}
+		}
+		
+		return suivant;
+	}
+	
+	public boolean voisinVerticalBas(int x,int y,String couleur){
+		boolean res=false;
+		for(int i=x;i<plateau.length;i++){
+			if(plateau[i][y].toString()==couleur){
+				res=true;
+			}
+		}
+		return res;
+	}
+	
 
 }
