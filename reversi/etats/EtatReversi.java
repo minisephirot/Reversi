@@ -82,12 +82,16 @@ public class EtatReversi extends Etat {
 	}
 	
 	public EtatReversi(EtatReversi et,int x,int y,JoueurReversi joueur){
+		plateau=new Jeton[et.plateau.length][et.plateau[0].length];
 		for(int i=0;i<et.getPlateau().length;i++){
 			for(int j=0;j<et.getPlateau()[i].length;j++){
-				this.plateau[i][j]=et.plateau[i][j];
+				if(et.plateau[i][j]==null) {
+					this.plateau[i][j]=null;
+				}else {
+					this.plateau[i][j]=et.plateau[i][j];
+				}
 			}
 		}
-		poserJeton(joueur,x,y);
 		this.numjoueur=!et.numjoueur;
 		
 	}
@@ -97,31 +101,66 @@ public class EtatReversi extends Etat {
 		for(int i = 0; i<plateau.length;i++){
 			for(int j = 0; j<plateau.length;j++){
 				if(numjoueur){
-					if(plateau[i][j].toString()=="B"){
-						if(plateau[i+1][j].toString()=="N"){
-							if(voisinVerticalBas(i+1,j,"N")){
-								suivant.add(new EtatReversi(this,i,j,joueur));
+						if(plateau[i][j]!=null && plateau[i][j].toString()=="blanc"){
+							if(plateau[i+1][j]!=null && plateau[i+1][j].toString()=="noir"){
+								if(voisinVerticalBas(i-1,j,"noir")){
+									suivant.add(new EtatReversi(this,i-1,j,joueur));
+									System.out.println("Le joueur 1 peut jouer en ("+i+";"+j+")");
+								}
 							}
 						}
-					}
 				}else{
-					if(plateau[i][j].toString()=="N"){
-						
+					if(plateau[i][j]!=null && plateau[i][j].toString()=="noir"){
+						if(voisinVerticalBas(i-1,j,"blanc")){
+							suivant.add(new EtatReversi(this,i-1,j,joueur));
+							System.out.println("Le joueur 2 peut jouer en ("+i+";"+j+")");
+						}
 					}
 				}
 			}
 		}
-		
 		return suivant;
 	}
 	
 	public boolean voisinVerticalBas(int x,int y,String couleur){
 		boolean res=false;
-		for(int i=x;i<plateau.length;i++){
-			if(plateau[i][y].toString()==couleur){
-				res=true;
+			if(plateau[x][y]!=null) {
+				for(int i=x;i<plateau.length;i++){
+					if(plateau[i][y]!=null && plateau[i][y].toString()==couleur){
+						res=true;
+					}
+				}
 			}
-		}
+		return res;
+	}
+	
+	public boolean voisinDiagonaleBasGauche(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	
+	public boolean voisinHorizontalGauche(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	public boolean voisinDiagonaleHautGauche(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	public boolean voisinVerticalHaut(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	public boolean voisinDiagonalHautDroite(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	public boolean voisinHorizontalDroite(int x, int y,String couleur) {
+		boolean res=false;
+		return res;
+	}
+	public boolean voisinDiagonalBasDroite(int x, int y,String couleur) {
+		boolean res=false;
 		return res;
 	}
 	

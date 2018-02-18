@@ -41,6 +41,7 @@ public class Reversi {
 				er.poserJeton(joueur, i, j);
 				System.out.println(er.toString());
 			}
+			er.successeur(joueur);
 		}
 		in.close();
 	}
