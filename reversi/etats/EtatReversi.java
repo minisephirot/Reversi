@@ -28,6 +28,7 @@ public class EtatReversi extends Etat {
 	}
 
 	public EtatReversi(EtatReversi et,int x,int y,JoueurReversi joueur){
+		this.possibles = new ArrayList<Coordonne>();
 		plateau=new Jeton[et.plateau.length][et.plateau[0].length];
 		for(int i=0;i<et.getPlateau().length;i++){
 			for(int j=0;j<et.getPlateau()[0].length;j++){
@@ -180,11 +181,6 @@ public class EtatReversi extends Etat {
 	}
 	
 	public int eval0(JoueurReversi joueur){
-		if (joueur.getId()){
-			
-		}else{
-			de
-		}
 		int nbblanc = 0;
 		int nbnoir = 0;
 		for(int i = 0; i<plateau.length;i++){
@@ -198,7 +194,11 @@ public class EtatReversi extends Etat {
 				}
 			}
 		}
-		return nbblanc-nbnoir;
+		if (joueur.getId()){
+			return nbblanc-nbnoir;
+		}else{
+			return nbnoir-nbblanc;
+		}
 	}
 
 	public ArrayList<EtatReversi> successeur(JoueurReversi joueur){

@@ -26,6 +26,10 @@ public class JoueurReversi extends Joueur {
 	public void jouer(Etat e) {
 		// TODO Auto-generated method stub
 	}
+	
+	public void jouerReversi(EtatReversi e, int x, int y){
+		e.poserJeton(this, x, y);
+	}
 
 	/**
 	 * @return the id of the player

@@ -34,7 +34,11 @@ public class Reversi {
 			}
 			// Produit les successeurs et affiche les possibilitées
 			ArrayList<EtatReversi> suivants = er.successeur(joueur);
-			//System.out.println(suivants);
+			for(EtatReversi succ : suivants){
+				System.out.println(succ);
+				int valeur = succ.eval0(joueur);
+				System.out.print("Score de l'état : "+valeur);
+			}
 			System.out.println(er.toString());
 			//Affiche a qui est le tour
 			if (!joueur.getId()){
@@ -49,7 +53,7 @@ public class Reversi {
 			System.out.printf("Enter y Value:  ");
 			j = in.nextInt();
 			if (i != -1 && j != -1){
-				er.poserJeton(joueur, i, j);
+				joueur.jouerReversi(er, i, j);
 			}
 		}
 		in.close();
