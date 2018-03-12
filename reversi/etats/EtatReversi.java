@@ -11,6 +11,8 @@ public class EtatReversi extends Etat {
 	private Jeton[][] plateau;
 	private boolean numjoueur;
 	private int tailleplateau;
+	protected int[] DifferenceX = { -1,  0,  1, -1, 1, -1, 0, 1 };
+    protected int[] DifferenceY = { -1, -1, -1,  0, 0,  1, 1, 1 };
 	
 	public EtatReversi(int i){
 		this.plateau = new Jeton[i][i];
@@ -24,18 +26,7 @@ public class EtatReversi extends Etat {
 	}
 
 	@Override
-	public void read() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void write() {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
 	public String toString() {
-		//return Arrays.deepToString(plateau).replace("], ", "]\n");
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i<this.plateau.length;i++){
 			sb.append("[");
@@ -106,76 +97,48 @@ public class EtatReversi extends Etat {
 				}
 			}
 		}
+		this.poserJeton(joueur, x, y);
 		this.numjoueur=!et.numjoueur;
 		
+	}
+	
+	public boolean isLegal (String color, int a, int b ) {
+	    if (!this.inside(a,b)) return false;
+	    //On regarde dans chaque directions, si on vois une case de la couleur opposée et une des notres c'est bon.
+	    for (int i = 0; i < this.DifferenceX.length; i++) {
+	      boolean adverse = false;
+	      int x = a; 
+	      int y = b;
+	      for (int j = 0; j < plateau.length; j++) {
+	        x += this.DifferenceX[i];
+	        y += this.DifferenceY[i];
+	        if (x > plateau.length || y > plateau.length) break; // stop when we end up off the board
+	        if (this.plateau[x][y] == null) break;
+	        else if (this.plateau[x][y].toString() != color) adverse = true;
+	        else if (adverse) return true;
+	        else break;
+	      }
+	    }
+
+	    return false;
+	  }
+	
+	public boolean inside(int x,int y){
+		return (x >= plateau.length || y >= plateau.length || x < 0 || y < 0);
 	}
 	
 	public ArrayList<EtatReversi> successeur(JoueurReversi joueur){
 		ArrayList<EtatReversi> suivant = new ArrayList<EtatReversi>();
 		for(int i = 0; i<plateau.length;i++){
 			for(int j = 0; j<plateau.length;j++){
-				if(numjoueur){
-						if(plateau[i][j]!=null && plateau[i][j].toString()=="blanc"){
-							if(plateau[i+1][j]!=null && plateau[i+1][j].toString()=="noir"){
-								if(voisinVerticalBas(i-1,j,"noir")){
-									suivant.add(new EtatReversi(this,i-1,j,joueur));
-									System.out.println("Le joueur 1 peut jouer en ("+i+";"+j+")");
-								}
-							}
-						}
-				}else{
-					if(plateau[i][j]!=null && plateau[i][j].toString()=="noir"){
-						if(voisinVerticalBas(i-1,j,"blanc")){
-							suivant.add(new EtatReversi(this,i-1,j,joueur));
-							System.out.println("Le joueur 2 peut jouer en ("+i+";"+j+")");
-						}
+				if ( plateau[i][j] == null){
+					if(this.isLegal(joueur.getJeton().toString(), i,j)){
+						suivant.add(new EtatReversi(this,i,j,joueur));
 					}
 				}
 			}
 		}
 		return suivant;
-	}
-	
-	public boolean voisinVerticalBas(int x,int y,String couleur){
-		boolean res=false;
-			if(plateau[x][y]!=null) {
-				for(int i=x;i<plateau.length;i++){
-					if(plateau[i][y]!=null && plateau[i][y].toString()==couleur){
-						res=true;
-					}
-				}
-			}
-		return res;
-	}
-	
-	public boolean voisinDiagonaleBasGauche(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	
-	public boolean voisinHorizontalGauche(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	public boolean voisinDiagonaleHautGauche(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	public boolean voisinVerticalHaut(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	public boolean voisinDiagonalHautDroite(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	public boolean voisinHorizontalDroite(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
-	}
-	public boolean voisinDiagonalBasDroite(int x, int y,String couleur) {
-		boolean res=false;
-		return res;
 	}
 	
 
