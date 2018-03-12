@@ -37,7 +37,7 @@ public class Reversi {
 			//System.out.println(suivants);
 			System.out.println(er.toString());
 			//Affiche a qui est le tour
-			if (joueur.getJeton().toString().equals("N")){
+			if (!joueur.getId()){
 				System.out.println("Aux noirs de jouer.");
 			}else{
 				System.out.println("Aux blancs de jouer.");
@@ -50,7 +50,6 @@ public class Reversi {
 			j = in.nextInt();
 			if (i != -1 && j != -1){
 				er.poserJeton(joueur, i, j);
-				System.out.println(er.toString());
 			}
 		}
 		in.close();

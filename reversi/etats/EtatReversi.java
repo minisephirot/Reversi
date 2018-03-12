@@ -11,35 +11,44 @@ public class EtatReversi extends Etat {
 	private int tailleplateau;
 	protected int[] DifferenceX = { -1,  0,  1, -1, 1, -1, 0, 1 };
 	protected int[] DifferenceY = { -1, -1, -1,  0, 0,  1, 1, 1 };
+	protected static String JNoir = "N";
+	protected static String JBlanc = "B";
+	protected static String Poss = "P";
 
 	public EtatReversi(int i){
 		this.plateau = new Jeton[i][i];
 		this.numjoueur = false; // au noir de jouer
 		this.tailleplateau = i;
 		//Initialise l'état initial du plateau (les 4 pions au centre)
-		this.plateau[3][3] = Jeton.J1;
-		this.plateau[4][4] = Jeton.J1;
-		this.plateau[4][3] = Jeton.J2;
-		this.plateau[3][4] = Jeton.J2;
+		this.plateau[3][3] = new Jeton(EtatReversi.JNoir);
+		this.plateau[4][4] = new Jeton(EtatReversi.JNoir);
+		this.plateau[4][3] = new Jeton(EtatReversi.JBlanc);
+		this.plateau[3][4] = new Jeton(EtatReversi.JBlanc);
 	}
 
 	public EtatReversi(EtatReversi et,int x,int y,JoueurReversi joueur){
 		plateau=new Jeton[et.plateau.length][et.plateau[0].length];
 		for(int i=0;i<et.getPlateau().length;i++){
 			for(int j=0;j<et.getPlateau()[0].length;j++){
-				if(et.plateau[i][j]==null || et.plateau[i][j] == Jeton.Possible) {
+				if(et.plateau[i][j]==null || et.plateau[i][j].toString() == EtatReversi.Poss) {
 					this.plateau[i][j]=null;
 				}else {
-					if (this.plateau[i][j] == Jeton.J1) this.plateau[i][j]= Jeton.J1;
-					else this.plateau[i][j] = Jeton.J2;
+					if (et.plateau[i][j].toString() == EtatReversi.JNoir) this.plateau[i][j]= new Jeton(EtatReversi.JNoir);
+					else this.plateau[i][j] = new Jeton(EtatReversi.JBlanc);
 				}
 			}
 		}
-		this.plateau[x][y] = joueur.getJeton();
-		this.inverserJeton(joueur.getJeton().toString(), x, y);
+		Jeton j;
+		if(joueur.getId()){
+			j = new Jeton(EtatReversi.JBlanc);
+		}else{
+			j = new Jeton(EtatReversi.JNoir);
+		}
+		this.plateau[x][y] = j;
+		this.inverserJeton(j.toString(), x, y);
 		this.numjoueur=!et.numjoueur;
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -88,11 +97,27 @@ public class EtatReversi extends Etat {
 	public void poserJeton(JoueurReversi joueur,int x, int y) {
 		if (joueur.getId() != this.numjoueur)
 			throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
-		if (this.plateau[x][y] != Jeton.Possible)
+		if (this.plateau[x][y].toString() != EtatReversi.Poss)
 			throw new RuntimeException("Erreur : Placement interdit.");
-		this.plateau[x][y] = joueur.getJeton();
-		this.inverserJeton(joueur.getJeton().toString(), x, y);
+		
+		Jeton jeton;
+		if(joueur.getId()){
+			jeton = new Jeton(EtatReversi.JBlanc);
+		}else{
+			jeton = new Jeton(EtatReversi.JNoir);
+		}
+		this.plateau[x][y] = jeton;
+		this.inverserJeton(jeton.toString(), x, y);
 		this.numjoueur = !this.numjoueur;
+		
+		//Reset les possibilités
+		for (int i = 0; i<this.tailleplateau; i++){
+			for (int j = 0; j<this.tailleplateau; j++){
+				if (this.plateau[i][j] != null && this.plateau[i][j].toString() == EtatReversi.Poss){
+					this.plateau[i][j] = null;
+				}
+			}
+		}
 	}
 
 	public Jeton[][] getPlateau(){
@@ -115,7 +140,7 @@ public class EtatReversi extends Etat {
 				y += this.DifferenceY[i];
 				if (this.outside(x, y)) break; // stop si on est en dehors
 				if (this.plateau[x][y] == null ) break;
-				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != Jeton.Possible.toString() ) adverse = true;
+				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != EtatReversi.Poss ) adverse = true;
 				else if (adverse) return true;
 				else break;
 			}
@@ -136,7 +161,7 @@ public class EtatReversi extends Etat {
 				y += this.DifferenceY[i];
 				if (this.outside(x, y)) break; // stop si on est en dehors
 				if (this.plateau[x][y] == null) break;
-				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != Jeton.Possible.toString()) inversion.add(this.plateau[x][y]);
+				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != EtatReversi.Poss ) inversion.add(this.plateau[x][y]);
 				else { // On retrouve notre jeton joué
 					for (Jeton token : inversion) token.retourner(); // on capture
 					break;
@@ -155,12 +180,17 @@ public class EtatReversi extends Etat {
 		for(int i = 0; i<plateau.length;i++){
 			for(int j = 0; j<plateau.length;j++){
 				if ( plateau[i][j] == null){
-					if(this.isLegal(joueur.getJeton().toString(), i,j)){
+					String  couleur;
+					if(joueur.getId()){
+						couleur = EtatReversi.JBlanc;
+					}else{
+						couleur = EtatReversi.JNoir;
+					}
+					if(this.isLegal(couleur, i,j)){
 						System.out.println("x:"+i+ " et y:"+j);
 						suivant.add(new EtatReversi(this,i,j,joueur));
 						//Ajoute un jeton de lisibilité
-						this.plateau[i][j] = Jeton.Possible;
-
+						this.plateau[i][j] = new Jeton(EtatReversi.Poss);
 					}
 				}
 			}
