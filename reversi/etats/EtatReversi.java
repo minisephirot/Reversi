@@ -13,12 +13,13 @@ public class EtatReversi extends Etat {
 	protected int[] DifferenceY = { -1, -1, -1,  0, 0,  1, 1, 1 };
 	protected static String JNoir = "N";
 	protected static String JBlanc = "B";
-	protected static String Poss = "P";
+	protected ArrayList<Coordonne> possibles;
 
 	public EtatReversi(int i){
 		this.plateau = new Jeton[i][i];
 		this.numjoueur = false; // au noir de jouer
 		this.tailleplateau = i;
+		this.possibles = new ArrayList<Coordonne>();
 		//Initialise l'état initial du plateau (les 4 pions au centre)
 		this.plateau[3][3] = new Jeton(EtatReversi.JNoir);
 		this.plateau[4][4] = new Jeton(EtatReversi.JNoir);
@@ -30,7 +31,7 @@ public class EtatReversi extends Etat {
 		plateau=new Jeton[et.plateau.length][et.plateau[0].length];
 		for(int i=0;i<et.getPlateau().length;i++){
 			for(int j=0;j<et.getPlateau()[0].length;j++){
-				if(et.plateau[i][j]==null || et.plateau[i][j].toString() == EtatReversi.Poss) {
+				if(et.plateau[i][j]==null) {
 					this.plateau[i][j]=null;
 				}else {
 					if (et.plateau[i][j].toString() == EtatReversi.JNoir) this.plateau[i][j]= new Jeton(EtatReversi.JNoir);
@@ -59,7 +60,11 @@ public class EtatReversi extends Etat {
 				if (this.plateau[i][j] != null){
 					sb.append(this.plateau[i][j].toString()+",");
 				}else{
-					sb.append("0,");
+					if (this.isPossible(i, j)){
+						sb.append("P,");
+					}else{
+						sb.append("0,");
+					}
 				}
 			}
 			sb.setLength(sb.length() - 1);
@@ -97,9 +102,9 @@ public class EtatReversi extends Etat {
 	public void poserJeton(JoueurReversi joueur,int x, int y) {
 		if (joueur.getId() != this.numjoueur)
 			throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
-		if (this.plateau[x][y].toString() != EtatReversi.Poss)
+		if (!this.isPossible(x, y))
 			throw new RuntimeException("Erreur : Placement interdit.");
-		
+
 		Jeton jeton;
 		if(joueur.getId()){
 			jeton = new Jeton(EtatReversi.JBlanc);
@@ -109,15 +114,9 @@ public class EtatReversi extends Etat {
 		this.plateau[x][y] = jeton;
 		this.inverserJeton(jeton.toString(), x, y);
 		this.numjoueur = !this.numjoueur;
-		
+
 		//Reset les possibilités
-		for (int i = 0; i<this.tailleplateau; i++){
-			for (int j = 0; j<this.tailleplateau; j++){
-				if (this.plateau[i][j] != null && this.plateau[i][j].toString() == EtatReversi.Poss){
-					this.plateau[i][j] = null;
-				}
-			}
-		}
+		this.possibles.clear();
 	}
 
 	public Jeton[][] getPlateau(){
@@ -140,7 +139,7 @@ public class EtatReversi extends Etat {
 				y += this.DifferenceY[i];
 				if (this.outside(x, y)) break; // stop si on est en dehors
 				if (this.plateau[x][y] == null ) break;
-				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != EtatReversi.Poss ) adverse = true;
+				else if (this.plateau[x][y].toString() != color ) adverse = true;
 				else if (adverse) return true;
 				else break;
 			}
@@ -161,7 +160,7 @@ public class EtatReversi extends Etat {
 				y += this.DifferenceY[i];
 				if (this.outside(x, y)) break; // stop si on est en dehors
 				if (this.plateau[x][y] == null) break;
-				else if (this.plateau[x][y].toString() != color && this.plateau[x][y].toString() != EtatReversi.Poss ) inversion.add(this.plateau[x][y]);
+				else if (this.plateau[x][y].toString() != color ) inversion.add(this.plateau[x][y]);
 				else { // On retrouve notre jeton joué
 					for (Jeton token : inversion) token.retourner(); // on capture
 					break;
@@ -173,6 +172,33 @@ public class EtatReversi extends Etat {
 
 	public boolean outside(int x,int y){
 		return (x >= plateau.length || y >= plateau.length || x < 0 || y < 0);
+	}
+
+	public boolean isPossible(int x,int y){
+		Coordonne c = new Coordonne(x,y);
+		return this.possibles.contains(c);
+	}
+	
+	public int eval0(JoueurReversi joueur){
+		if (joueur.getId()){
+			
+		}else{
+			de
+		}
+		int nbblanc = 0;
+		int nbnoir = 0;
+		for(int i = 0; i<plateau.length;i++){
+			for(int j = 0; j<plateau.length;j++){
+				if (this.plateau[i][j] != null){
+					if (this.plateau[i][j].toString() == EtatReversi.JBlanc ){
+						nbblanc++;
+					}else{
+						nbnoir++;
+					}
+				}
+			}
+		}
+		return nbblanc-nbnoir;
 	}
 
 	public ArrayList<EtatReversi> successeur(JoueurReversi joueur){
@@ -188,9 +214,8 @@ public class EtatReversi extends Etat {
 					}
 					if(this.isLegal(couleur, i,j)){
 						System.out.println("x:"+i+ " et y:"+j);
+						this.possibles.add(new Coordonne(i, j));
 						suivant.add(new EtatReversi(this,i,j,joueur));
-						//Ajoute un jeton de lisibilité
-						this.plateau[i][j] = new Jeton(EtatReversi.Poss);
 					}
 				}
 			}
