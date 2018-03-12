@@ -35,7 +35,21 @@ public class EtatReversi extends Etat {
 
 	@Override
 	public String toString() {
-		return Arrays.deepToString(plateau).replace("], ", "]\n");
+		//return Arrays.deepToString(plateau).replace("], ", "]\n");
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i<this.plateau.length;i++){
+			sb.append("[");
+			for (int j = 0; j<this.plateau[0].length; j++){
+				if (this.plateau[i][j] != null){
+					sb.append(this.plateau[i][j].toString()+",");
+				}else{
+					sb.append("0,");
+				}
+			}
+			sb.setLength(sb.length() - 1);
+			sb.append("]\n");
+		}
+		return sb.toString();
 	}
 
 	@Override
@@ -97,7 +111,7 @@ public class EtatReversi extends Etat {
 	}
 	
 	public ArrayList<EtatReversi> successeur(JoueurReversi joueur){
-		ArrayList<EtatReversi> suivant = new ArrayList<>();
+		ArrayList<EtatReversi> suivant = new ArrayList<EtatReversi>();
 		for(int i = 0; i<plateau.length;i++){
 			for(int j = 0; j<plateau.length;j++){
 				if(numjoueur){

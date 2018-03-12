@@ -3,8 +3,8 @@ package reversi.etats;
 public enum Jeton {
 	
 	// param de l'enum
-	J1("noir"),
-	J2("blanc");
+	J1("N"),
+	J2("B");
 	
 	private String couleur;
 	
@@ -18,10 +18,10 @@ public enum Jeton {
 	}
 	
 	public void retourner(){
-		if (this.couleur.equals("blanc"))
-			this.couleur = "noir";
+		if (this.couleur.equals("B"))
+			this.couleur = "N";
 		else
-			this.couleur = "blanc";
+			this.couleur = "B";
 	}
 	
 	public boolean idem(Jeton j){
