@@ -1,5 +1,7 @@
 package reversi;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import reversi.etats.EtatReversi;
@@ -14,9 +16,6 @@ public class Reversi {
 	public static void main(String[] args) {
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8);
-		EtatReversi er2 = new EtatReversi(8);
-		System.out.println(er.toString());
-		System.out.println(er.equals(er2));
 
 		//false = noir, true = blanc
 		JoueurReversi j1 = new JoueurReversi(false);
@@ -27,12 +26,24 @@ public class Reversi {
 		JoueurReversi joueur;
 		Scanner in = new Scanner(System.in); 
 		while(i != -1 && j != -1){
-			//taking value as command line argument.
+			//Determine qui a la main
 			if (!er.getTour()){
 				joueur = j1;
 			}else{
 				joueur = j2;
 			}
+			// Produit les successeurs et affiche les possibilitées
+			ArrayList<EtatReversi> suivants = er.successeur(joueur);
+			//System.out.println(suivants);
+			System.out.println(er.toString());
+			//Affiche a qui est le tour
+			if (joueur.getJeton().toString().equals("N")){
+				System.out.println("Aux noirs de jouer.");
+			}else{
+				System.out.println("Aux blancs de jouer.");
+			}
+			System.out.println("P = vos possibilités.");
+			//Prends les entréess
 			System.out.printf("Enter x Value:  ");
 			i = in.nextInt();
 			System.out.printf("Enter y Value:  ");
@@ -41,7 +52,6 @@ public class Reversi {
 				er.poserJeton(joueur, i, j);
 				System.out.println(er.toString());
 			}
-			er.successeur(joueur);
 		}
 		in.close();
 	}

@@ -4,13 +4,18 @@ public enum Jeton {
 	
 	// param de l'enum
 	J1("N"),
-	J2("B");
+	J2("B"),
+	Possible("P");
 	
 	private String couleur;
 	
 	
 	private Jeton(String s){
 		this.couleur = s;
+	}
+	
+	private Jeton (Jeton j){
+		this.couleur = j.couleur;
 	}
 	
 	public String toString(){
