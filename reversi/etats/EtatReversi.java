@@ -7,7 +7,7 @@ import reversi.joueur.JoueurReversi;
 public class EtatReversi extends Etat {
 
 	private Jeton[][] plateau;
-	private boolean numjoueur;
+	private boolean numjoueur;//True = blanc 
 	private int tailleplateau;
 	protected int[] DifferenceX = { -1,  0,  1, -1, 1, -1, 0, 1 };
 	protected int[] DifferenceY = { -1, -1, -1,  0, 0,  1, 1, 1 };
@@ -15,6 +15,9 @@ public class EtatReversi extends Etat {
 	protected static String JBlanc = "B";
 	protected ArrayList<Coordonne> possibles;
 
+	private JoueurReversi jnoir;
+	private JoueurReversi jblanc;
+	
 	public EtatReversi(int i){
 		this.plateau = new Jeton[i][i];
 		this.numjoueur = false; // au noir de jouer
@@ -101,6 +104,7 @@ public class EtatReversi extends Etat {
 	}
 
 	public void poserJeton(JoueurReversi joueur,int x, int y) {
+		System.out.println(joueur.getId()+"  joue en ["+x+";"+y+"]");
 		if (joueur.getId() != this.numjoueur)
 			throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
 		if (!this.isPossible(x, y))
@@ -123,9 +127,32 @@ public class EtatReversi extends Etat {
 	public Jeton[][] getPlateau(){
 		return this.plateau;
 	}
+	
+	public int getSizePlateau() {
+		return this.plateau.length;
+	}
+	
+	public String getCouleurJeton(int x, int y) {
+		if(plateau[x][y]==null) {
+			return "Vide";
+		}else {
+			return plateau[x][y].toString();
+		}
+	}
 
 	public boolean getTour(){
 		return this.numjoueur;
+	}
+	
+	public void addJoueur(JoueurReversi jnoir,JoueurReversi jblanc) {
+		this.jnoir=jnoir;
+		this.jblanc=jblanc;
+	}
+	
+	public JoueurReversi getJoueur(){
+		if(this.numjoueur)
+			return jblanc;
+		return jnoir;
 	}
 
 	public boolean isLegal (String color, int a, int b ) {
@@ -222,6 +249,8 @@ public class EtatReversi extends Etat {
 		}
 		return suivant;
 	}
+
+	
 
 
 }

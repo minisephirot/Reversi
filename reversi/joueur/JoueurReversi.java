@@ -2,7 +2,6 @@ package reversi.joueur;
 
 import reversi.etats.Etat;
 import reversi.etats.EtatReversi;
-import reversi.etats.Jeton;
 
 public class JoueurReversi extends Joueur {
 	
