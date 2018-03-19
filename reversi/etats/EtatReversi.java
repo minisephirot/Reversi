@@ -139,6 +139,32 @@ public class EtatReversi extends Etat {
 			return plateau[x][y].toString();
 		}
 	}
+	
+	public int getNbBlanc(){
+		int res=0;
+		for(int i=0;i< plateau.length;i++){
+			for(int j=0;j<plateau.length;j++){
+				if(plateau[i][j]!=null && plateau[i][j].toString()=="B"){
+					res++;
+				}
+			}
+		}
+		return res;
+	}
+	
+	public int getNbNoir(){
+		int res=0;
+		for(int i=0;i< plateau.length;i++){
+			for(int j=0;j<plateau.length;j++){
+				if(plateau[i][j]!=null && plateau[i][j].toString()=="N"){
+					res++;
+				}
+			}
+		}
+		return res;
+	}
+
+
 
 	public boolean getTour(){
 		return this.numjoueur;
