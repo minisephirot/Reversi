@@ -240,7 +240,6 @@ public class EtatReversi extends Etat {
 						couleur = EtatReversi.JNoir;
 					}
 					if(this.isLegal(couleur, i,j)){
-						System.out.println("x:"+i+ " et y:"+j);
 						this.possibles.add(new Coordonne(i, j));
 						suivant.add(new EtatReversi(this,i,j,joueur));
 					}
@@ -250,6 +249,57 @@ public class EtatReversi extends Etat {
 		return suivant;
 	}
 
+	public EtatReversi minmax(int profondeur){
+		ArrayList<EtatReversi> successeurs = this.successeur(getJoueur());
+		int scoremax = Integer.MIN_VALUE;
+		EtatReversi res = null;
+		for (EtatReversi e : successeurs){
+			int score = e.evaluer(profondeur, getJoueur());
+			if (score >= scoremax){
+				res = e;
+				scoremax = score;
+			}
+		}
+		return res;
+	}
+	
+	public boolean isFinal(){
+		ArrayList<EtatReversi> successeurs = this.successeur(this.jblanc);
+		ArrayList<EtatReversi> successeurs2 = this.successeur(this.jnoir);
+		return successeurs.isEmpty() && successeurs2.isEmpty();
+	}
+
+	private int evaluer(int profondeur, JoueurReversi joueur) {
+		int evalue = this.eval0(joueur);
+		//Cas final
+		if (this.isFinal()){
+			if (evalue > 0){ //On gagne
+				return Integer.MAX_VALUE;
+			}
+			if (evalue < 0){ //On perds
+				return Integer.MIN_VALUE;
+			}
+			return evalue;//Egalité
+		}
+		//Cas normal
+		if (profondeur == 0){
+			return evalue;
+		}
+		ArrayList<EtatReversi> successeurs = this.successeur(getJoueur());
+		if (getJoueur().isMachine()){
+			int scoremax = Integer.MIN_VALUE;
+			for (EtatReversi e : successeurs){
+				scoremax = Math.max(scoremax, e.evaluer(profondeur-1, joueur));
+			}
+			return scoremax;
+		}else{
+			int scoremin = Integer.MAX_VALUE;
+			for (EtatReversi e : successeurs){
+				scoremin = Math.min(scoremin, e.evaluer(profondeur-1, joueur));
+			}
+			return scoremin;
+		}
+	}
 	
 
 

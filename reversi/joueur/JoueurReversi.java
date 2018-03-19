@@ -6,13 +6,15 @@ import reversi.etats.EtatReversi;
 public class JoueurReversi extends Joueur {
 	
 	private boolean id;
+	private boolean machine;
 	
-	public JoueurReversi(boolean b){
+	public JoueurReversi(boolean b, boolean machine){
 		if (!b){
 			this.setId(false);
 		}else{
 			this.setId(true);
 		}
+		this.machine = machine;
 	}
 
 	@Override
@@ -42,6 +44,10 @@ public class JoueurReversi extends Joueur {
 	 */
 	public void setId(boolean id) {
 		this.id = id;
+	}
+
+	public boolean isMachine() {
+		return this.machine;
 	}
 
 }

@@ -23,17 +23,14 @@ public class Reversi {
 				EtatReversi er = new EtatReversi(8);
 				
 				//false = noir, true = blanc
-				JoueurReversi j1 = new JoueurReversi(false);
-				JoueurReversi j2 = new JoueurReversi(true);
+				JoueurReversi j1 = new JoueurReversi(false,false);
+				JoueurReversi j2 = new JoueurReversi(true,false);
 				
 				er.addJoueur(j1,j2);
 				
 				Affichage af = new Affichage(er);
-				int i = 0;
-				int j = 0;
 				JoueurReversi joueur;
-				Scanner in = new Scanner(System.in); 
-				while(i != -1 && j != -1){
+				while(true){
 					//Determine qui a la main
 					if (!er.getTour()){
 						joueur = j1;
@@ -42,17 +39,8 @@ public class Reversi {
 					}
 					// Produit les successeurs et affiche les possibilitées
 					ArrayList<EtatReversi> suivants = er.successeur(joueur);
-					for(EtatReversi succ : suivants){
-						System.out.println(succ);
-						int valeur = succ.eval0(joueur);
-						System.out.print("Score de l'état : "+valeur);
-					}
-					System.out.println(er.toString());
-					
 					af.miseAJour();
 				}
-				in.close();
-		
 	}
 	
 	public static void testConsole() {
@@ -60,8 +48,8 @@ public class Reversi {
 				EtatReversi er = new EtatReversi(8);
 				
 				//false = noir, true = blanc
-				JoueurReversi j1 = new JoueurReversi(false);
-				JoueurReversi j2 = new JoueurReversi(true);
+				JoueurReversi j1 = new JoueurReversi(false,false);
+				JoueurReversi j2 = new JoueurReversi(true,false);
 				
 				er.addJoueur(j1,j2);
 				

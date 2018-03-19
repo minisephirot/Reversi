@@ -15,7 +15,7 @@ import reversi.etats.EtatReversi;
 public class Affichage extends JFrame {
 	
 	private JPanel plateau;
-	private RoundButton[][] cases;
+	private JButton[][] cases;
 	private EtatReversi etat;
 
 	
@@ -30,16 +30,15 @@ public class Affichage extends JFrame {
 		plateau=new JPanel();
 		plateau.setLayout(new GridLayout(etat.getSizePlateau(),etat.getSizePlateau()));
 		
-		cases=new RoundButton[etat.getSizePlateau()][etat.getSizePlateau()];
+		cases=new JButton[etat.getSizePlateau()][etat.getSizePlateau()];
 		
 		
 		for(int i=0;i<etat.getSizePlateau();i++) {
 			for(int j=0;j<etat.getSizePlateau();j++) {
-				int k=i;
-				int l=j;
-				cases[i][j]=new RoundButton();
+				final int k=i;
+				final int l=j;
+				cases[i][j]=new JButton();
 				cases[i][j].addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						etat.getJoueur().jouerReversi(etat,k,l);
 						miseAJour();
