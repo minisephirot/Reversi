@@ -1,6 +1,8 @@
 package reversi.etats;
 
-public abstract class Etat {
+import java.util.Observable;
+
+public abstract class Etat extends Observable{
 	
 	
 	@Override

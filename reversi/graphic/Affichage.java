@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -20,7 +22,7 @@ import javax.swing.JPanel;
 import reversi.etats.EtatReversi;
 
 @SuppressWarnings("serial")
-public class Affichage extends JFrame {
+public class Affichage extends JFrame implements Observer {
 	
 	private JPanel plateau;
 	private JPanel score;
@@ -34,6 +36,7 @@ public class Affichage extends JFrame {
 	public Affichage(EtatReversi er) {
 		super("Reversi");
 		this.etat=er;
+		this.etat.addObserver(this);
 		this.setSize(1000,800);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -59,17 +62,14 @@ public class Affichage extends JFrame {
 		
 		cases=new JButton[etat.getSizePlateau()][etat.getSizePlateau()];
 		
-		
 		for(int i=0;i<etat.getSizePlateau();i++) {
 			for(int j=0;j<etat.getSizePlateau();j++) {
 				final int k=i;
 				final int l=j;
 				cases[i][j]=new JButton();
 				cases[i][j].addActionListener(new ActionListener() {
-					@Override
 					public void actionPerformed(ActionEvent arg0) {
 						etat.getJoueur().jouerReversi(etat,k,l);
-						miseAJour();
 					}
 				});
 				plateau.add(cases[i][j]);
@@ -79,10 +79,10 @@ public class Affichage extends JFrame {
 		this.add(plateau,BorderLayout.WEST);
 		this.add(score,BorderLayout.EAST);
 		this.setVisible(true);
-		miseAJour();
+		this.update(this.etat,this);
 	}
-	
-	public void miseAJour() {
+
+	public void update(Observable arg0, Object arg1) {
 		nbBlanc.setText("Jeton(s) blanc(s) : "+etat.getNbBlanc());
 		nbNoir.setText("Jeton(s) Noir(s) : "+etat.getNbNoir());
 		

@@ -14,20 +14,26 @@ public class EtatReversi extends Etat {
 	protected static String JNoir = "N";
 	protected static String JBlanc = "B";
 	protected ArrayList<Coordonne> possibles;
+	protected ArrayList<EtatReversi> successeurs;
 
 	private JoueurReversi jnoir;
 	private JoueurReversi jblanc;
-	
-	public EtatReversi(int i){
+	protected Coordonne coupjoue;
+
+	public EtatReversi(int i,JoueurReversi jnoir,JoueurReversi jblanc){
 		this.plateau = new Jeton[i][i];
 		this.numjoueur = false; // au noir de jouer
 		this.tailleplateau = i;
 		this.possibles = new ArrayList<Coordonne>();
+		this.successeurs = new ArrayList<EtatReversi>();
 		//Initialise l'état initial du plateau (les 4 pions au centre)
 		this.plateau[3][3] = new Jeton(EtatReversi.JNoir);
 		this.plateau[4][4] = new Jeton(EtatReversi.JNoir);
 		this.plateau[4][3] = new Jeton(EtatReversi.JBlanc);
 		this.plateau[3][4] = new Jeton(EtatReversi.JBlanc);
+        this.jnoir=jnoir;
+        this.jblanc=jblanc;
+        this.successeurs = this.successeur(this.getJoueur());
 	}
 
 	public EtatReversi(EtatReversi et,int x,int y,JoueurReversi joueur){
@@ -50,8 +56,11 @@ public class EtatReversi extends Etat {
 			j = new Jeton(EtatReversi.JNoir);
 		}
 		this.plateau[x][y] = j;
+		this.coupjoue = new Coordonne(x, y);
 		this.inverserJeton(j.toString(), x, y);
 		this.numjoueur=!et.numjoueur;
+		this.jblanc = et.jblanc;
+		this.jnoir = et.jnoir;
 	}
 
 	@Override
@@ -112,7 +121,7 @@ public class EtatReversi extends Etat {
 
 		Jeton jeton;
 		if(joueur.getId()){
-			jeton = new Jeton(EtatReversi.JBlanc);
+			jeton = new Jeton(EtatReversi.JBlanc	);
 		}else{
 			jeton = new Jeton(EtatReversi.JNoir);
 		}
@@ -122,16 +131,23 @@ public class EtatReversi extends Etat {
 
 		//Reset les possibilités
 		this.possibles.clear();
+        // Produit les successeurs et affiche les possibilitées
+        this.successeurs = this.successeur(this.getJoueur());
+		this.maj();
 	}
 
 	public Jeton[][] getPlateau(){
 		return this.plateau;
 	}
-	
+
+	public Coordonne getCoup(){
+		return this.coupjoue;
+	}
+
 	public int getSizePlateau() {
 		return this.plateau.length;
 	}
-	
+
 	public String getCouleurJeton(int x, int y) {
 		if(plateau[x][y]==null) {
 			return "Vide";
@@ -139,7 +155,7 @@ public class EtatReversi extends Etat {
 			return plateau[x][y].toString();
 		}
 	}
-	
+
 	public int getNbBlanc(){
 		int res=0;
 		for(int i=0;i< plateau.length;i++){
@@ -151,7 +167,7 @@ public class EtatReversi extends Etat {
 		}
 		return res;
 	}
-	
+
 	public int getNbNoir(){
 		int res=0;
 		for(int i=0;i< plateau.length;i++){
@@ -164,17 +180,10 @@ public class EtatReversi extends Etat {
 		return res;
 	}
 
-
-
 	public boolean getTour(){
 		return this.numjoueur;
 	}
-	
-	public void addJoueur(JoueurReversi jnoir,JoueurReversi jblanc) {
-		this.jnoir=jnoir;
-		this.jblanc=jblanc;
-	}
-	
+    
 	public JoueurReversi getJoueur(){
 		if(this.numjoueur)
 			return jblanc;
@@ -198,7 +207,6 @@ public class EtatReversi extends Etat {
 				else break;
 			}
 		}
-
 		return false;
 	}
 
@@ -232,7 +240,7 @@ public class EtatReversi extends Etat {
 		Coordonne c = new Coordonne(x,y);
 		return this.possibles.contains(c);
 	}
-	
+
 	public int eval0(JoueurReversi joueur){
 		int nbblanc = 0;
 		int nbnoir = 0;
@@ -272,6 +280,7 @@ public class EtatReversi extends Etat {
 				}
 			}
 		}
+		this.maj();
 		return suivant;
 	}
 
@@ -280,7 +289,7 @@ public class EtatReversi extends Etat {
 		int scoremax = Integer.MIN_VALUE;
 		EtatReversi res = null;
 		for (EtatReversi e : successeurs){
-			int score = e.evaluer(profondeur, getJoueur());
+			int score = e.evaluer(profondeur, getJoueur(),0,0);
 			if (score >= scoremax){
 				res = e;
 				scoremax = score;
@@ -288,14 +297,14 @@ public class EtatReversi extends Etat {
 		}
 		return res;
 	}
-	
+
 	public boolean isFinal(){
 		ArrayList<EtatReversi> successeurs = this.successeur(this.jblanc);
 		ArrayList<EtatReversi> successeurs2 = this.successeur(this.jnoir);
 		return successeurs.isEmpty() && successeurs2.isEmpty();
 	}
 
-	private int evaluer(int profondeur, JoueurReversi joueur) {
+	private int evaluer(int profondeur, JoueurReversi joueur,int alpha , int beta) {
 		int evalue = this.eval0(joueur);
 		//Cas final
 		if (this.isFinal()){
@@ -315,18 +324,23 @@ public class EtatReversi extends Etat {
 		if (getJoueur().isMachine()){
 			int scoremax = Integer.MIN_VALUE;
 			for (EtatReversi e : successeurs){
-				scoremax = Math.max(scoremax, e.evaluer(profondeur-1, joueur));
+				scoremax = Math.max(scoremax, e.evaluer(profondeur-1, joueur, alpha, beta));
 			}
 			return scoremax;
 		}else{
 			int scoremin = Integer.MAX_VALUE;
 			for (EtatReversi e : successeurs){
-				scoremin = Math.min(scoremin, e.evaluer(profondeur-1, joueur));
+				scoremin = Math.min(scoremin, e.evaluer(profondeur-1, joueur, alpha, beta));
 			}
 			return scoremin;
 		}
 	}
 	
+	private void maj(){
+		this.setChanged();
+		this.notifyObservers();
+	}
+
 
 
 }
