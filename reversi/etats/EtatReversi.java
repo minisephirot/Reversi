@@ -276,6 +276,22 @@ public class EtatReversi extends Etat {
             return nbnoir-nbblanc;
         }
     }
+    
+    public int eval0AvecPlateau(JoueurReversi joueur){
+        int res=0;
+        int x=this.coupjoue.getX();
+        int y=this.coupjoue.getY();
+        res+=Math.abs(x-plateau.length/2);
+        res+=Math.abs(y-plateau.length/2);
+        return res;
+    }
+   
+    public int eval0Somme(JoueurReversi joueur){
+        int res=0;
+        res+=eval0(joueur);
+        res+=eval0AvecPlateau(joueur);
+        return res;
+    }
 
     public ArrayList<EtatReversi> successeur(JoueurReversi joueur, boolean test){
         ArrayList<EtatReversi> suivant = new ArrayList<EtatReversi>();
