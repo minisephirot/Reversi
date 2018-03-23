@@ -46,4 +46,8 @@ public class Coordonne {
 		this.y = y;
 	}
 
+	@Override
+	public String toString() {
+		return "Coup possibe :"+this.x+ " et "+y;
+	}
 }

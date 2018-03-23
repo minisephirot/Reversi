@@ -34,12 +34,6 @@ public class JoueurReversi extends Joueur {
 	}
 	
 	public void jouerReversi(EtatReversi e){
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		EtatReversi choosed = e.minmax(1);
 		Coordonne c = choosed.getCoup();
 		e.poserJeton(this, c.getX(), c.getY());

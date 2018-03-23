@@ -21,8 +21,8 @@ public class Reversi {
 	public static void testInterface() {
 
 		//false = noir, true = blanc
-		JoueurReversi j1 = new JoueurReversi(false,false);
-		JoueurReversi j2 = new JoueurReversi(true,false);
+		JoueurReversi j1 = new JoueurReversi(false,true);
+		JoueurReversi j2 = new JoueurReversi(true,true);
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);
 
@@ -32,7 +32,7 @@ public class Reversi {
 	public static void testConsole() {
 		//false = noir, true = blanc
 		JoueurReversi j1 = new JoueurReversi(false,false);
-		JoueurReversi j2 = new JoueurReversi(true,false);
+		JoueurReversi j2 = new JoueurReversi(true,true);
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);
 
@@ -48,7 +48,7 @@ public class Reversi {
 				joueur = j2;
 			}
 			// Produit les successeurs et affiche les possibilitées
-			ArrayList<EtatReversi> suivants = er.successeur(joueur);
+			ArrayList<EtatReversi> suivants = er.successeur(joueur,false);
 			System.out.println(er.toString());
 			for (EtatReversi e: suivants){
 				System.out.println("Coup possible en x:"+e.getCoup().getX() + " et y:"+e.getCoup().getY());
