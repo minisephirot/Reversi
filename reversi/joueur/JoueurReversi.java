@@ -34,7 +34,7 @@ public class JoueurReversi extends Joueur {
 	}
 	
 	public void jouerReversi(EtatReversi e){
-		EtatReversi choosed = e.minmax(1);
+		EtatReversi choosed = e.minmax(3);
 		Coordonne c = choosed.getCoup();
 		e.poserJeton(this, c.getX(), c.getY());
 	}

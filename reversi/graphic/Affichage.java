@@ -65,7 +65,11 @@ public class Affichage extends JFrame implements Observer {
 				cases[i][j].addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						if (etat.isFullmachine()){
+							long startTime = System.currentTimeMillis();
 							etat.lancerMachines();
+							long stopTime = System.currentTimeMillis();
+							long elapsedTime = stopTime - startTime;
+							System.out.print("("+elapsedTime+" ms)\n");
 						}else{
 							if (etat.getJoueur().isMachine() && !etat.isFinal()){
 								etat.getJoueur().jouerReversi(etat);

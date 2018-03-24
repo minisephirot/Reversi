@@ -305,7 +305,7 @@ public class EtatReversi extends Etat {
         int scoremax = Integer.MIN_VALUE;
         EtatReversi res = null;
         for (EtatReversi e : successeurs){
-            int score = e.evaluer(profondeur, getJoueur(),Integer.MIN_VALUE,Integer.MAX_VALUE);
+            int score = e.evaluer(profondeur, e,Integer.MIN_VALUE,Integer.MAX_VALUE);
             if (score >= scoremax){
                 res = e;
                 scoremax = score;
@@ -320,8 +320,8 @@ public class EtatReversi extends Etat {
         return successeurs.isEmpty() && successeurs2.isEmpty();
     }
 
-    private int evaluer(int profondeur, JoueurReversi joueur,int alpha , int beta) {
-        int evalue = this.eval0(joueur);
+    private int evaluer(int profondeur, EtatReversi etat,int alpha , int beta) {
+        int evalue = this.eval0(etat.getJoueur());
         //Cas final
         if (this.isFinal()){
             if (evalue > 0){ //On gagne
@@ -340,13 +340,21 @@ public class EtatReversi extends Etat {
         if (getJoueur().isMachine()){
             int scoremax = Integer.MIN_VALUE;
             for (EtatReversi e : successeurs){
-                scoremax = Math.max(scoremax, e.evaluer(profondeur-1, joueur, alpha, beta));
+                scoremax = Math.max(scoremax, e.evaluer(profondeur-1, e, alpha, beta));
+                if (scoremax >= beta){
+                	return scoremax;
+                }
+                alpha = Math.max(alpha,scoremax);
             }
             return scoremax;
         }else{
             int scoremin = Integer.MAX_VALUE;
             for (EtatReversi e : successeurs){
-                scoremin = Math.min(scoremin, e.evaluer(profondeur-1, joueur, alpha, beta));
+                scoremin = Math.min(scoremin, e.evaluer(profondeur-1, e, alpha, beta));
+                if (scoremin <= alpha){
+                	return scoremin;
+                }
+                beta = Math.min(beta,scoremin);
             }
             return scoremin;
         }

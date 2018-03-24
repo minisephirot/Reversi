@@ -1,1 +1,2 @@
-Eval 0 du début : Nb pions du joueur - Nb pions joueurs adverse
+Eval 0 du debut : Nb pions du joueur - Nb pions joueurs adverse 
+Avec une evaluation de profondeur 3, le duel de machine termine en 9642ms l'un contre l'autre sans elagage et en 8200ms avec elagage.
