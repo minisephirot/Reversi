@@ -3,6 +3,13 @@ package reversi;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import reversi.etats.EtatReversi;
 import reversi.graphic.Affichage;
 import reversi.joueur.JoueurReversi;
@@ -14,18 +21,41 @@ public class Reversi {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		  testInterface();
+		testInterface();
 		//testConsole();
 	}
 
 	public static void testInterface() {
 
+		String[] elements = new String[]{"1 Joueur", "2 Joueur", "0 Joueur"};
+		JComboBox<String> liste = new JComboBox<String>(elements);
+		final JComponent[] inputs = new JComponent[] {
+				new JLabel("Nombre de joueurs:"),
+				liste,
+		};
+		int result = JOptionPane.showConfirmDialog(null, inputs, "Initialisation", JOptionPane.PLAIN_MESSAGE);
+		if (result == JOptionPane.OK_OPTION) {
+			System.out.println("You entered " +liste.getSelectedIndex());
+		} else {
+			System.exit(0);
+		}
+		JoueurReversi j1 = null;
+		JoueurReversi j2 = null;
 		//false = noir, true = blanc
-		JoueurReversi j1 = new JoueurReversi(false,true);
-		JoueurReversi j2 = new JoueurReversi(true,true);
+		if (liste.getSelectedItem().equals("1 Joueur")){
+			 j1 = new JoueurReversi(false,false);
+			 j2 = new JoueurReversi(true,true);
+		}
+		if (liste.getSelectedItem().equals("2 Joueur")){
+			 j1 = new JoueurReversi(false,false);
+			 j2 = new JoueurReversi(true,false);
+		}
+		if (liste.getSelectedItem().equals("0 Joueur")){
+			 j1 = new JoueurReversi(false,true);
+			 j2 = new JoueurReversi(true,true);
+		}
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);
-
 		Affichage af = new Affichage(er);
 	}
 
