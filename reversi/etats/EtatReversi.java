@@ -337,9 +337,9 @@ public class EtatReversi extends Etat {
     }
 
     private int evaluer(int profondeur, EtatReversi etat,int alpha , int beta) {
-        int evalue = this.eval0(etat.getJoueur());
+        int evalue = etat.eval0(etat.getJoueur());
         //Cas final
-        if (this.isFinal()){
+        if (etat.isFinal()){
             if (evalue > 0){ //On gagne
                 return Integer.MAX_VALUE;
             }
@@ -352,8 +352,8 @@ public class EtatReversi extends Etat {
         if (profondeur == 0){
             return evalue;
         }
-        ArrayList<EtatReversi> successeurs = this.successeur(getJoueur(),false);
-        if (getJoueur().isMachine()){
+        ArrayList<EtatReversi> successeurs = etat.successeur(getJoueur(),false);
+        if (etat.getJoueur().isMachine()){
             int scoremax = Integer.MIN_VALUE;
             for (EtatReversi e : successeurs){
                 scoremax = Math.max(scoremax, e.evaluer(profondeur-1, e, alpha, beta));
