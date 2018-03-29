@@ -35,7 +35,6 @@ public class Reversi {
 		};
 		int result = JOptionPane.showConfirmDialog(null, inputs, "Initialisation", JOptionPane.PLAIN_MESSAGE);
 		if (result == JOptionPane.OK_OPTION) {
-			System.out.println("You entered " +liste.getSelectedIndex());
 		} else {
 			System.exit(0);
 		}

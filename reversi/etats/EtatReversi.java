@@ -27,14 +27,13 @@ public class EtatReversi extends Etat {
         this.possibles = new ArrayList<Coordonne>();
         this.successeurs = new ArrayList<EtatReversi>();
         //Initialise l'état initial du plateau (les 4 pions au centre)
-        this.plateau[3][3] = new Jeton(EtatReversi.JNoir);
-        this.plateau[4][4] = new Jeton(EtatReversi.JNoir);
-        this.plateau[4][3] = new Jeton(EtatReversi.JBlanc);
-        this.plateau[3][4] = new Jeton(EtatReversi.JBlanc);
+        this.plateau[4][3] = new Jeton(EtatReversi.JNoir);
+        this.plateau[3][4] = new Jeton(EtatReversi.JNoir);
+        this.plateau[4][4] = new Jeton(EtatReversi.JBlanc);
+        this.plateau[3][3] = new Jeton(EtatReversi.JBlanc);
         this.jnoir=jnoir;
         this.jblanc=jblanc;
         this.successeurs = this.successeur(this.getJoueur(),true);
-        System.out.println(this.possibles);
         if (jnoir.isMachine() && jblanc.isMachine()){
             this.fullmachine = true;
         }
@@ -118,12 +117,13 @@ public class EtatReversi extends Etat {
     }
 
     public void poserJeton(JoueurReversi joueur,int x, int y) {
+        System.out.println("Coup joué en : " + x + " et " + y);
         if (joueur.getId() != this.numjoueur)
             throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
-        if (!this.isPossible(x, y))
-            System
+        if (!this.isPossible(x, y)) {
+            System.out.println("Coup joué en : " + x + " et " + y);
             throw new RuntimeException("Erreur : Placement interdit.");
-
+        }
         Jeton jeton;
         if(joueur.getId()){
             jeton = new Jeton(EtatReversi.JBlanc	);
@@ -138,6 +138,7 @@ public class EtatReversi extends Etat {
         this.possibles.clear();
         // Produit les successeurs et affiche les possibilitées
         this.successeurs = this.successeur(this.getJoueur(),true);
+        //traite les cas bloquants
         while (this.isBloque() && !this.isFinal()){
             this.numjoueur = !this.numjoueur;
             //Reset les possibilités
@@ -205,6 +206,13 @@ public class EtatReversi extends Etat {
             return jblanc;
         return jnoir;
     }
+
+    public JoueurReversi getJoueurnoncourant(){
+        if(this.numjoueur)
+            return jnoir;
+        return jblanc;
+    }
+
 
     public boolean isLegal (String color, int a, int b ) {
         if (this.outside(a,b)) return false;
@@ -277,7 +285,7 @@ public class EtatReversi extends Etat {
             return nbnoir-nbblanc;
         }
     }
-    
+
     public int eval0AvecPlateau(JoueurReversi joueur){
         int res=0;
         int x=this.coupjoue.getX();
@@ -286,7 +294,12 @@ public class EtatReversi extends Etat {
         res+=Math.abs(y-plateau.length/2);
         return res;
     }
-   
+
+    public int eval0Coups(JoueurReversi joueur){
+        JoueurReversi j = this.getJoueurnoncourant();
+        return -(this.successeur(j,false).size());
+    }
+
     public int eval0Somme(JoueurReversi joueur){
         int res=0;
         res+=eval0(joueur);
@@ -359,7 +372,7 @@ public class EtatReversi extends Etat {
             for (EtatReversi e : successeurs){
                 scoremax = Math.max(scoremax, e.evaluer(profondeur-1, e, alpha, beta));
                 if (scoremax >= beta){
-                	return scoremax;
+                    return scoremax;
                 }
                 alpha = Math.max(alpha,scoremax);
             }
@@ -369,7 +382,7 @@ public class EtatReversi extends Etat {
             for (EtatReversi e : successeurs){
                 scoremin = Math.min(scoremin, e.evaluer(profondeur-1, e, alpha, beta));
                 if (scoremin <= alpha){
-                	return scoremin;
+                    return scoremin;
                 }
                 beta = Math.min(beta,scoremin);
             }
@@ -390,7 +403,7 @@ public class EtatReversi extends Etat {
     }
 
     public void lancerMachines(){
-        if (jnoir.isMachine() && jblanc.isMachine()){
+        if (this.fullmachine){
             while(!this.isFinal()){
                 this.getJoueur().jouerReversi(this);
             }
