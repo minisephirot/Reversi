@@ -8,14 +8,16 @@ public class JoueurReversi extends Joueur {
 	
 	private boolean id;
 	private boolean machine;
+	private int queleval;
 	
-	public JoueurReversi(boolean b, boolean machine){
+	public JoueurReversi(boolean b, boolean machine, int queleval){
 		if (!b){
 			this.setId(false);
 		}else{
 			this.setId(true);
 		}
 		this.machine = machine;
+		this.queleval = queleval;
 	}
 
 	@Override
@@ -34,7 +36,7 @@ public class JoueurReversi extends Joueur {
 	}
 	
 	public void jouerReversi(EtatReversi e){
-		EtatReversi choosed = e.minmax(3);
+		EtatReversi choosed = e.minmax(3,this.getEval());
 		Coordonne c = choosed.getCoup();
 		e.poserJeton(this, c.getX(), c.getY());
 	}
@@ -47,7 +49,7 @@ public class JoueurReversi extends Joueur {
 	}
 
 	/**
-	 * @param set the id of the player
+	 * @param
 	 */
 	public void setId(boolean id) {
 		this.id = id;
@@ -55,6 +57,10 @@ public class JoueurReversi extends Joueur {
 
 	public boolean isMachine() {
 		return this.machine;
+	}
+
+	public int getEval() {
+		return this.queleval;
 	}
 
 }

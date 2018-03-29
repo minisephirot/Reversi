@@ -42,16 +42,16 @@ public class Reversi {
 		JoueurReversi j2 = null;
 		//false = noir, true = blanc
 		if (liste.getSelectedItem().equals("1 Joueur")){
-			 j1 = new JoueurReversi(false,false);
-			 j2 = new JoueurReversi(true,true);
+			 j1 = new JoueurReversi(false,false,0);
+			 j2 = new JoueurReversi(true,true,3);
 		}
 		if (liste.getSelectedItem().equals("2 Joueur")){
-			 j1 = new JoueurReversi(false,false);
-			 j2 = new JoueurReversi(true,false);
+			 j1 = new JoueurReversi(false,false,0);
+			 j2 = new JoueurReversi(true,false,0);
 		}
 		if (liste.getSelectedItem().equals("0 Joueur")){
-			 j1 = new JoueurReversi(false,true);
-			 j2 = new JoueurReversi(true,true);
+			 j1 = new JoueurReversi(false,true,0);
+			 j2 = new JoueurReversi(true,true,1);
 		}
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);
@@ -60,8 +60,8 @@ public class Reversi {
 
 	public static void testConsole() {
 		//false = noir, true = blanc
-		JoueurReversi j1 = new JoueurReversi(false,false);
-		JoueurReversi j2 = new JoueurReversi(true,true);
+		JoueurReversi j1 = new JoueurReversi(false,false,0);
+		JoueurReversi j2 = new JoueurReversi(true,true,1);
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);
 

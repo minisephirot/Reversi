@@ -117,7 +117,6 @@ public class EtatReversi extends Etat {
     }
 
     public void poserJeton(JoueurReversi joueur,int x, int y) {
-        System.out.println("Coup joué en : " + x + " et " + y);
         if (joueur.getId() != this.numjoueur)
             throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
         if (!this.isPossible(x, y)) {
@@ -304,6 +303,7 @@ public class EtatReversi extends Etat {
         int res=0;
         res+=eval0(joueur);
         res+=eval0AvecPlateau(joueur);
+        res+=eval0Coups(joueur);
         return res;
     }
 
@@ -330,12 +330,12 @@ public class EtatReversi extends Etat {
         return suivant;
     }
 
-    public EtatReversi minmax(int profondeur){
+    public EtatReversi minmax(int profondeur, int algo){
         ArrayList<EtatReversi> successeurs = this.successeur(getJoueur(),false);
         int scoremax = Integer.MIN_VALUE;
         EtatReversi res = null;
         for (EtatReversi e : successeurs){
-            int score = e.evaluer(profondeur, e,Integer.MIN_VALUE,Integer.MAX_VALUE);
+            int score = e.evaluer(algo, profondeur, e,Integer.MIN_VALUE,Integer.MAX_VALUE);
             if (score >= scoremax){
                 res = e;
                 scoremax = score;
@@ -350,8 +350,22 @@ public class EtatReversi extends Etat {
         return successeurs.isEmpty() && successeurs2.isEmpty();
     }
 
-    private int evaluer(int profondeur, EtatReversi etat,int alpha , int beta) {
-        int evalue = etat.eval0AvecPlateau(etat.getJoueur());
+    private int evaluer(int algo, int profondeur, EtatReversi etat,int alpha , int beta) {
+        int evalue = 0;
+        switch (algo) {
+            case 0:
+                evalue = etat.eval0(etat.getJoueur());
+                break;
+            case 1:
+                evalue = etat.eval0AvecPlateau(etat.getJoueur());
+                break;
+            case 2:
+                evalue = etat.eval0Coups(etat.getJoueur());
+                break;
+            case 3:
+                evalue = etat.eval0Somme(etat.getJoueur());
+                break;
+        }
         //Cas final
         if (etat.isFinal()){
             if (evalue > 0){ //On gagne
@@ -370,7 +384,7 @@ public class EtatReversi extends Etat {
         if (etat.getJoueur().isMachine()){
             int scoremax = Integer.MIN_VALUE;
             for (EtatReversi e : successeurs){
-                scoremax = Math.max(scoremax, e.evaluer(profondeur-1, e, alpha, beta));
+                scoremax = Math.max(scoremax, e.evaluer(algo,profondeur-1, e, alpha, beta));
                 if (scoremax >= beta){
                     return scoremax;
                 }
@@ -380,7 +394,7 @@ public class EtatReversi extends Etat {
         }else{
             int scoremin = Integer.MAX_VALUE;
             for (EtatReversi e : successeurs){
-                scoremin = Math.min(scoremin, e.evaluer(profondeur-1, e, alpha, beta));
+                scoremin = Math.min(scoremin, e.evaluer(algo,profondeur-1, e, alpha, beta));
                 if (scoremin <= alpha){
                     return scoremin;
                 }
@@ -408,6 +422,44 @@ public class EtatReversi extends Etat {
                 this.getJoueur().jouerReversi(this);
             }
         }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Le Joueur noir avec algo : ");
+        switch (jnoir.getEval()) {
+            case 0:
+                sb.append("Le plus de pions pris");
+                break;
+            case 1:
+                sb.append("Le plus a l'extreme du plateau");
+                break;
+            case 2:
+                sb.append("Le moins de coups laissé a l'adversaire");
+                break;
+            case 3:
+                sb.append("mix des 3 evals");
+                break;
+        }
+
+        if (this.getNbBlanc() > this.getNbNoir()){
+            sb.append("\n a perdu contre \n");
+        }else{
+            sb.append("\n a gagné contre \n");
+        }
+        sb.append("Le Joueur blanc avec algo : ");
+        switch (jblanc.getEval()) {
+            case 0:
+                sb.append("Le plus de pions pris");
+                break;
+            case 1:
+                sb.append("Le plus a l'extreme du plateau");
+                break;
+            case 2:
+                sb.append("Le moins de coups laissé a l'adversaire");
+                break;
+            case 3:
+                sb.append("mix des 3 evals");
+                break;
+        }
+        System.out.println(sb.toString());
     }
 
     private void maj(){
