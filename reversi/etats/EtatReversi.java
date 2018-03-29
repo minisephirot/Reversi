@@ -121,6 +121,7 @@ public class EtatReversi extends Etat {
         if (joueur.getId() != this.numjoueur)
             throw new RuntimeException("Erreur : Joueur joue sans que ce soit sont tour.");
         if (!this.isPossible(x, y))
+            System
             throw new RuntimeException("Erreur : Placement interdit.");
 
         Jeton jeton;
@@ -337,7 +338,7 @@ public class EtatReversi extends Etat {
     }
 
     private int evaluer(int profondeur, EtatReversi etat,int alpha , int beta) {
-        int evalue = etat.eval0(etat.getJoueur());
+        int evalue = etat.eval0AvecPlateau(etat.getJoueur());
         //Cas final
         if (etat.isFinal()){
             if (evalue > 0){ //On gagne
