@@ -7,8 +7,6 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import reversi.etats.EtatReversi;
 import reversi.graphic.Affichage;
@@ -51,7 +49,7 @@ public class Reversi {
 		}
 		if (liste.getSelectedItem().equals("0 Joueur")){
 			 j1 = new JoueurReversi(false,true,0);
-			 j2 = new JoueurReversi(true,true,1);
+			 j2 = new JoueurReversi(true,true,2);
 		}
 		//Plateau de Reversi de 8x8
 		EtatReversi er = new EtatReversi(8,j1,j2);

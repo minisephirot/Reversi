@@ -301,9 +301,9 @@ public class EtatReversi extends Etat {
 
     public int eval0Somme(JoueurReversi joueur){
         int res=0;
-        res+=eval0(joueur);
+        res+=15*eval0(joueur);
         res+=eval0AvecPlateau(joueur);
-        res+=eval0Coups(joueur);
+        res+=5*eval0Coups(joueur);
         return res;
     }
 

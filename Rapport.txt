@@ -1,0 +1,32 @@
+THIS Elliot - DARMOIS Victor : REPCO
+
+Fonctionnement :
+Lancez le jar selectionnez si vous voulez 0 joueurs (machine contre machine), 1 (joueur contre machine) ou 2 (joueurs vs joueurs)
+Si il y a un joueur humain il joue toujours le premier.
+Dans le cas machine vs machine il faut cliquer sur une case possible pour les lancers l'une contre l'autre, la position du clic n'as pas d'incidence.
+
+Rapport des TP :
+
+Tout les tps on été faits, Victor Darmois a fais l'IG et les evals 0 et Elliot This a fais les algos.
+Les difficultées rencontrées ont été le choix de modélisation du programme ainsi que de trouver des eval0 pertinentes
+Si nous avions eu plus du temps j'aurais polish l'IG pour implementer correctement le Threading (pour éviter de sleep l'interface) ainsi
+qu'essayer d'implementer des eval0 plus complexes (strategie de maximisation de la prise des pions qui ne peuvent plus être pris).
+
+Evals 0 :
+-Eval 0 n°1(du debut) : Nb pions du joueur - Nb pions joueurs adverse 
+-Eval 0 n°2 : Plus le pions possible est a l'extreme du plateau meilleur est l'eval
+-Eval 0 n°3 : Le moins de successeurs a l'adversaire
+-Eval 0 n°4 : Mix des 3 coefficientées avec le methode du cours en 4.4 (modif des valeurs par un param delta modifié pas à pas)
+
+Implementation de minimax et elagage :
+Avec une evaluation de profondeur 3, le duel de machine termine en 9642ms l'un contre l'autre sans elagage et en 8200ms avec elagage.
+
+Resultat des choix de evals 0 :
+Eval 0 n°1 est meilleure que eval 0 n°2  (2 - 0)
+Eval 0 n°3 est à égalité avec eval 0 n°2 (1 - 1) -> Changer la profondeur fais gagner Eval 0 n°3.
+Eval 0 n°3 est meilleure que eval 0 n°1 (2 - 0)
+
+Situation inattendue car 1 bat 2 , 3 bat 1 mais 3 est ex-equo avec 2, on tends en terme de 
+rapidité et de resultat que eval 0 n°3 est la meilleure en plus du changement de profondeur pour les departagers.
+
+
